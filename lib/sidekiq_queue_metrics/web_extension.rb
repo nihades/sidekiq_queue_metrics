@@ -14,15 +14,15 @@ module Sidekiq::QueueMetrics
       end
 
       app.get '/queue_metrics/queues/:queue/summary' do
-        @queue = route_params[:queue]
+        @queue = params[:queue]
         @queue_stats = Sidekiq::QueueMetrics.fetch[@queue]
         @failed_jobs = Sidekiq::QueueMetrics.failed_jobs(@queue)
         render(:erb, File.read(File.join(view_path, "queue_summary.erb")))
       end
 
       app.get '/queue_metrics/queues/:queue/jobs/:jid' do
-        queue = route_params[:queue]
-        jid = route_params[:jid]
+        queue = params[:queue]
+        jid = params[:jid]
         failed_jobs = Sidekiq::QueueMetrics.failed_jobs(queue)
         @job = failed_jobs.find {|job| job['jid'] == jid}
         render(:erb, File.read(File.join(view_path, "failed_job.erb")))
